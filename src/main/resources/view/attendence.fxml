@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="rootAttendence" prefHeight="618.0" prefWidth="1092.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.AtendenceController">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d4e1ee" height="618.0" layoutX="2.0" layoutY="1.0" stroke="TRANSPARENT" strokeType="INSIDE" width="1092.0" />
+      <Label layoutX="415.0" layoutY="34.0" prefHeight="35.0" prefWidth="238.0" text="ATTENDENCE FORM" textFill="#3c3939" underline="true">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label layoutX="129.0" layoutY="104.0" text="Attendence Id:" textFill="#363232">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtAId" layoutX="250.0" layoutY="100.0" onAction="#txtIdOnAction" prefHeight="28.0" prefWidth="284.0" style="-fx-border-insets: #073763;">
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor>
+      </TextField>
+      <Label layoutX="187.0" layoutY="164.0" text="Name:" textFill="#363232">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtAName" layoutX="250.0" layoutY="160.0" prefHeight="28.0" prefWidth="284.0" style="-fx-border-insets: #073763;">
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor>
+      </TextField>
+      <TableView fx:id="tableAttendence" layoutX="130.0" layoutY="300.0" prefHeight="250.0" prefWidth="870.0">
+         <columns>
+            <TableColumn fx:id="colId" prefWidth="136.0" text="Attendence Id" />
+            <TableColumn fx:id="colName" prefWidth="287.0" text="Name" />
+            <TableColumn fx:id="colDate" prefWidth="194.0" text="Date" />
+            <TableColumn fx:id="colPersentOrNot" prefWidth="107.0" text="Present or Not:" />
+            <TableColumn fx:id="colEmployeeId" prefWidth="145.0" text="Employee Id" />
+         </columns>
+      </TableView>
+      <Label layoutX="590.0" layoutY="104.0" prefHeight="21.0" prefWidth="93.0" text="Employee Id:" textFill="#363232">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <JFXButton buttonType="RAISED" contentDisplay="RIGHT" layoutX="489.0" layoutY="223.0" onAction="#btnPresntOnAction" prefHeight="35.0" prefWidth="114.0" style="-fx-background-color: #f1c232;" text="Present" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </JFXButton>
+      <JFXButton buttonType="RAISED" contentDisplay="RIGHT" layoutX="653.0" layoutY="223.0" onAction="#btnAbsantOnAction" prefHeight="35.0" prefWidth="114.0" style="-fx-background-color: red;" text="Absant" textFill="#fffafa">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </JFXButton>
+      <ComboBox fx:id="cmbEmpolyeeId" layoutX="700.0" layoutY="101.0" onAction="#cmbEmpolyeIdOnAction" prefHeight="28.0" prefWidth="284.0" />
+   </children>
+</AnchorPane>
