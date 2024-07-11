@@ -13,7 +13,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="618.0" prefWidth="1094.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.controller.addNewOrderController">
+<AnchorPane fx:id="root" prefHeight="618.0" prefWidth="1094.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.AddNewOrderController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#d4e1ee" height="618.0" stroke="TRANSPARENT" strokeType="INSIDE" width="1094.0" />
       <Label layoutX="470.0" layoutY="24.0" prefHeight="34.0" prefWidth="175.0" text="Add New Order" textFill="#3c3939" underline="true">

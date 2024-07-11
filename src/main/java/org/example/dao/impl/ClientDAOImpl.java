@@ -2,10 +2,7 @@ package org.example.dao.impl;
 
 import org.example.dao.SQLUtil;
 import org.example.dao.custom.ClientDAO;
-import org.example.dto.AtendenctDTO;
-import org.example.dto.ClientDTO;
 import org.example.entity.Client;
-import org.example.entity.Product;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -64,5 +61,13 @@ public class ClientDAOImpl implements ClientDAO {
     public boolean update(Client entity) throws SQLException, ClassNotFoundException {
         return SQLUtil.execute("UPDATE client SET name=?, address=?, contactNumber=?, email=? WHERE cid=? ", entity.getName(),entity.getAddress(),entity.getContactNumber(), entity.getEmail(),entity.getId());
     }
+
+    @Override
+    public Client getCustomerList(String cNumber) throws SQLException, ClassNotFoundException {
+        ResultSet rst  = SQLUtil.execute("SELECT * FROM client WHERE contactNumber=?",cNumber+"");
+        rst.next();
+        return  new Client (rst.getString("cid"), rst.getString("name"),rst.getString("address"),rst.getString("contactNumber"),rst.getString("email"));
+    }
+
 
 }

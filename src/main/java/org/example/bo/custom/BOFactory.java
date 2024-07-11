@@ -15,7 +15,7 @@ public class BOFactory {
     }
 
     public enum BOTypes{
-        CLIENT, PRODUCT, TARGET, ATENDENCE, MATERIAL, SALARY, TARGETDETAIL, EMPLOYEE
+        CLIENT, PRODUCT, TARGET, ATENDENCE, MATERIAL, SALARY, TARGETDETAIL, AOD, EMPLOYEE
     }
 
     //Object creation logic for BO objects
@@ -37,6 +37,8 @@ public class BOFactory {
                 return new SalaryBOImpl();
             case TARGETDETAIL:
                 return new TargetDetailBOImpl();
+            case AOD:
+                return new AddOrderBOImpl();
 
             default:
                 return null;

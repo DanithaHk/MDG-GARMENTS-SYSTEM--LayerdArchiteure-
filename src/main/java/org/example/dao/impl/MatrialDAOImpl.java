@@ -44,7 +44,14 @@ public class MatrialDAOImpl implements MaterialDAO {
 
     @Override
     public List<String> getIds() throws SQLException, ClassNotFoundException {
-        return null;
+        List<String> idList = new ArrayList<>();
+
+        ResultSet rst = SQLUtil.execute("SELECT mid FROM material");
+
+        while(rst.next()) {
+            idList.add(rst.getString(1));
+        }
+        return idList;
     }
 
     @Override
@@ -64,5 +71,14 @@ public class MatrialDAOImpl implements MaterialDAO {
     public boolean update(Material entity) throws SQLException, ClassNotFoundException {
         return SQLUtil.execute("UPDATE material SET description = ?,qty =?,costPerOne = ?,username =? WHERE mid = ?"  , entity.getDescription(),entity.getQty(),entity.getCostPerOne(),entity.getUsername(),entity.getId());
 
+    }
+
+
+
+    @Override
+    public Material materialsList(String name) throws SQLException, ClassNotFoundException {
+        ResultSet resultSet = SQLUtil.execute( "SELECT * from material where description =?", name);
+        resultSet.next();
+        return new Material(resultSet.getString("mid"),resultSet.getString("description"),resultSet.getInt("qty"),resultSet.getDouble("costPerOne"),resultSet.getString("username"));
     }
 }

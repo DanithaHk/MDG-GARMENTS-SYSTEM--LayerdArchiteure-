@@ -42,8 +42,15 @@ public class ProductDAOImpl implements ProductDAO {
     }
 
     @Override
-    public List<String> getIds() {
-        return null;
+    public List<String> getIds() throws SQLException, ClassNotFoundException {
+        List<String> idList = new ArrayList<>();
+
+        ResultSet rst = SQLUtil.execute("SELECT pid FROM product");
+
+        while(rst.next()) {
+            idList.add(rst.getString(1));
+        }
+        return idList;
     }
 
     @Override
