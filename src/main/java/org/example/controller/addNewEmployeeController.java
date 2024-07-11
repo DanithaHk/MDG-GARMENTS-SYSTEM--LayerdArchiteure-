@@ -18,6 +18,7 @@ import org.example.bo.custom.EmployeeBO;
 import org.example.bo.custom.impl.EmployeeBOImpl;
 import org.example.dto.EmployeeDTO;
 import org.example.entity.Employee;
+import org.example.util.ValidateUtil;
 import org.example.view.tdm.EmployeeTm;
 
 import java.awt.event.KeyEvent;
@@ -165,17 +166,19 @@ public class addNewEmployeeController {
         String jobRole = txtEjobRole.getText();
         String userName = txtUsername.getText();
 
-
-        boolean isSaved = false;
-        try {
-            isSaved = employeeBO1.addEmployee(new EmployeeDTO(id,name,address,contactNumber,jobRole,userName));
-            if (isSaved) {
-                new Alert(Alert.AlertType.CONFIRMATION, "Employee saved!").show();
-                clear();
-                initialize();
+        boolean isValiad = validateEmployee();
+        if(isValiad) {
+            boolean isSaved = false;
+            try {
+                isSaved = employeeBO1.addEmployee(new EmployeeDTO(id, name, address, contactNumber, jobRole, userName));
+                if (isSaved) {
+                    new Alert(Alert.AlertType.CONFIRMATION, "Employee saved!").show();
+                    clear();
+                    initialize();
+                }
+            } catch (SQLException | ClassNotFoundException e) {
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
             }
-        } catch (SQLException | ClassNotFoundException e) {
-             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         }
 
     }
@@ -219,5 +222,58 @@ public class addNewEmployeeController {
 
 
     public void txtKeyRelese(javafx.scene.input.KeyEvent keyEvent) {
+    }
+    private boolean validateEmployee() {
+        String id = txtEid.getText();
+        int num = 0;
+        boolean isEmployeeIdValidated = Pattern.matches("[E][0-9]{3,}", id);
+        if (!isEmployeeIdValidated) {
+            //new Alert(Alert.AlertType.ERROR, "INVALID Id").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEid);
+        }
+        String name = txtEname.getText();
+        boolean isEmployeeNameValidated = Pattern.matches("[A-Z  a-z]{3,}", name);
+        if (!isEmployeeNameValidated) {
+            // new Alert(Alert.AlertType.ERROR, "INVALID Name").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEname);
+        }
+        String address = txtEaddress.getText();
+        boolean isEmployeeAddressValidated = Pattern.matches("[A-Za-z0-9/.\\s]{3,}", address);
+        if (!isEmployeeAddressValidated) {
+            //new Alert(Alert.AlertType.ERROR, "INVALID Address").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEaddress);
+        }
+        String contactNumber = txtEcontactNumber.getText();
+        boolean isCustomerTelValidated = Pattern.matches("[0-9]{10}", contactNumber);
+        if (!isCustomerTelValidated) {
+            //new Alert(Alert.AlertType.ERROR, "INVALID Tel").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEcontactNumber);
+        }
+        String jobRole = txtEjobRole.getText();
+        boolean isEmployeejobroleValidated = Pattern.matches("[A-Z  a-z]{2,}", name);
+        if (!isEmployeejobroleValidated) {
+            // new Alert(Alert.AlertType.ERROR, "INVALID Name").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEjobRole);
+        }
+
+        String username = txtUsername.getText();
+        boolean isEusernameValidated = Pattern.matches("[A-Z  a-z]{2,}", name);
+        if (!isEusernameValidated) {
+            // new Alert(Alert.AlertType.ERROR, "INVALID Name").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtUsername);
+        }
+        if (num == 1) {
+            num = 0;
+            return false;
+        } else {
+            num = 0;
+            return true;
+        }
     }
 }

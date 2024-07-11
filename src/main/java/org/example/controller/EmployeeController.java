@@ -12,10 +12,12 @@ import javafx.scene.layout.AnchorPane;
 import org.example.bo.custom.BOFactory;
 import org.example.bo.custom.EmployeeBO;
 import org.example.dto.EmployeeDTO;
+import org.example.util.ValidateUtil;
 import org.example.view.tdm.EmployeeTm;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class EmployeeController {
     @FXML
@@ -96,7 +98,6 @@ public class EmployeeController {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(allEmployee);
         for (EmployeeDTO e : allEmployee) {
             tableEmployee.getItems().add(new EmployeeTm(e.getId(), e.getName(), e.getAddress(),e.getContactNumber(),e.getJobRole(),e.getUsername()));
         }
@@ -114,17 +115,19 @@ public class EmployeeController {
         String jobRole = txtEjobRole.getText();
         String userName = txtEUsername.getText();
 
-
-        boolean isSaved = false;
-        try {
-            isSaved = employeeBO.addEmployee(new EmployeeDTO(id,name,address,contactNumber,jobRole,userName));
-            if (isSaved) {
-                new Alert(Alert.AlertType.CONFIRMATION, "Employee saved!").show();
-                cleAr();
-                initialize();
+        boolean isValidate = validateEmployee();
+        if (isValidate) {
+            boolean isSaved = false;
+            try {
+                isSaved = employeeBO.addEmployee(new EmployeeDTO(id, name, address, contactNumber, jobRole, userName));
+                if (isSaved) {
+                    new Alert(Alert.AlertType.CONFIRMATION, "Employee saved!").show();
+                    cleAr();
+                    initialize();
+                }
+            } catch (SQLException | ClassNotFoundException e) {
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
         }
     }
 
@@ -188,6 +191,59 @@ public class EmployeeController {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+    private boolean validateEmployee() {
+        String id = txtEid.getText();
+        int num = 0;
+        boolean isEmployeeIdValidated = Pattern.matches("[E][0-9]{3,}", id);
+        if (!isEmployeeIdValidated) {
+            //new Alert(Alert.AlertType.ERROR, "INVALID Id").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEid);
+        }
+        String name = txtEname.getText();
+        boolean isEmployeeNameValidated = Pattern.matches("[A-Z  a-z]{3,}", name);
+        if (!isEmployeeNameValidated) {
+            // new Alert(Alert.AlertType.ERROR, "INVALID Name").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEname);
+        }
+        String address = txtEaddress.getText();
+        boolean isEmployeeAddressValidated = Pattern.matches("[A-Za-z0-9/.\\s]{3,}", address);
+        if (!isEmployeeAddressValidated) {
+            //new Alert(Alert.AlertType.ERROR, "INVALID Address").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEaddress);
+        }
+        String contactNumber = txtEcontactNumber.getText();
+        boolean isCustomerTelValidated = Pattern.matches("[0-9]{10}", contactNumber);
+        if (!isCustomerTelValidated) {
+            //new Alert(Alert.AlertType.ERROR, "INVALID Tel").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEcontactNumber);
+        }
+        String jobRole = txtEjobRole.getText();
+        boolean isEmployeejobroleValidated = Pattern.matches("[A-Z  a-z]{2,}", name);
+        if (!isEmployeejobroleValidated) {
+            // new Alert(Alert.AlertType.ERROR, "INVALID Name").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEjobRole);
+        }
+
+        String username = txtEUsername.getText();
+        boolean isEusernameValidated = Pattern.matches("[A-Z  a-z]{2,}", name);
+        if (!isEusernameValidated) {
+            // new Alert(Alert.AlertType.ERROR, "INVALID Name").show();
+            num = 1;
+            ValidateUtil.vibrateTextField(txtEUsername);
+        }
+        if (num == 1) {
+            num = 0;
+            return false;
+        } else {
+            num = 0;
+            return true;
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -12,11 +13,14 @@ import javafx.scene.layout.AnchorPane;
 import org.example.bo.custom.BOFactory;
 import org.example.bo.custom.ClientBO;
 import org.example.dto.ClientDTO;
-import org.example.dto.ProductDTO;
 import org.example.view.tdm.ClientTm;
 
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
+
+import static org.example.util.ValidateUtil.vibrateTextField;
 
 public class ClientController {
     @FXML
@@ -54,10 +58,10 @@ public class ClientController {
     private TextField txtclientId;
     @FXML
     private JFXButton btnDelete;
-    ClientBO clientBO  = (ClientBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.CLIENT);
+    ClientBO clientBO = (ClientBO) BOFactory.getBoFactory().getBO(BOFactory.BOTypes.CLIENT);
 
 
-    public void initialize(){
+    public void initialize() {
         setCellValueFactory();
         loadClientTable();
         tblClient.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -83,7 +87,7 @@ public class ClientController {
             throw new RuntimeException(e);
         }
         for (ClientDTO c : allClient) {
-            tblClient.getItems().add(new ClientTm(c.getId(),c.getName(),c.getAddress(),c.getContactNumber(),c.getEmail()));
+            tblClient.getItems().add(new ClientTm(c.getId(), c.getName(), c.getAddress(), c.getContactNumber(), c.getEmail()));
         }
     }
 
@@ -101,30 +105,34 @@ public class ClientController {
     }
 
     public void btnAddClientOnAction(ActionEvent event) {
+
         String id = txtclientId.getText();
         String name = txtCname.getText();
         String address = txtCadress.getText();
         String contactNumber = txtCconatctnumber.getText();
         String email = txtCemail.getText();
+        boolean isValidate = validateCustomer();
+            if(isValidate) {
+                boolean isSaved = false;
+                try {
+                    isSaved = clientBO.addClient(new ClientDTO(id, name, address, contactNumber, email));
 
-        boolean isSaved = false;
-        try {
-            isSaved = clientBO.addClient(new ClientDTO(id, name, address, contactNumber, email));
+                    if (isSaved) {
+                        new Alert(Alert.AlertType.CONFIRMATION, "Client saved!").show();
+                        clear();
+                        initialize();
+                    }
+                } catch (SQLException | ClassNotFoundException e) {
+                    throw new RuntimeException(e);
 
-            if (isSaved) {
-                new Alert(Alert.AlertType.CONFIRMATION, "Client saved!").show();
-                clear();
-                initialize();
+                }
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
 
-        }
     }
 
     public void btnDeleteClientOnAction(ActionEvent event) {
         String id = tblClient.getSelectionModel().getSelectedItem().getId();
-        try{
+        try {
             //Delete Customer
             clientBO.deleteClient(id);
 
@@ -161,21 +169,109 @@ public class ClientController {
         String contactNumber = txtCconatctnumber.getText();
         String email = txtCemail.getText();
         boolean isUpdated = false;
-        try {
-            isUpdated = clientBO.updateClient(new ClientDTO(id,name,address,contactNumber,email));
-            new Alert(Alert.AlertType.CONFIRMATION, "Updated!").show();
-            initialize();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+
+            try {
+                isUpdated = clientBO.updateClient(new ClientDTO(id, name, address, contactNumber, email));
+                new Alert(Alert.AlertType.CONFIRMATION, "Updated!").show();
+                initialize();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+
     }
-    public void clear(){
+
+    public void clear() {
         txtCadress.clear();
         txtCname.clear();
         txtCconatctnumber.clear();
         txtclientId.clear();
         txtCemail.clear();
+    }
+
+    private boolean validateCustomer() {
+        int num = 0;
+        String id = txtclientId.getText();
+
+        boolean isCustomerIdValidated = Pattern.matches("[C][0-9]{3,}", id);
+        if (!isCustomerIdValidated) {
+            //new Alert(Alert.AlertType.ERROR, "INVALID Id").show();
+            num = 1;
+            vibrateTextField(txtclientId);
+        }
+
+        String name = txtCname.getText();
+        boolean isCustomerNameValidated = Pattern.matches("[A-Z  a-z]{3,}", name);
+        if (!isCustomerNameValidated) {
+            // new Alert(Alert.AlertType.ERROR, "INVALID Name").show();
+            num = 1;
+            vibrateTextField(txtCname);
+        }
+
+
+        String number = txtCconatctnumber.getText();
+        boolean isCustomerTelValidated = Pattern.matches("[0-9]{10}", number);
+        if (!isCustomerTelValidated) {
+            //new Alert(Alert.AlertType.ERROR, "INVALID Tel").show();
+            num = 1;
+            vibrateTextField(txtCconatctnumber);
+        }
+
+        String email = txtCemail.getText();
+        boolean isCustomerEmailValidated = Pattern.matches("[a-z].*(com|lk)", email);
+        if (!isCustomerEmailValidated) {
+            //new Alert(Alert.AlertType.ERROR, "INVALID Email").show();
+            num = 1;
+            vibrateTextField(txtCemail);
+        }
+        String address = txtCadress.getText();
+        boolean isCustomerAddressValidated = Pattern.matches("[A-Za-z0-9/.,\\s]{3,}", address);
+        if (!isCustomerAddressValidated) {
+            //new Alert(Alert.AlertType.ERROR, "INVALID Address").show();
+            num = 1;
+            vibrateTextField(txtCadress);
+        }
+        if (num == 1) {
+            num = 0;
+            return false;
+        } else {
+            num = 0;
+            return true;
+        }
+    }
+
+
+    public void txtCustomerIDOnKeyReleased(KeyEvent keyEvent) {
+        //  Regex.setTextColor(lk.ijse.AutoCareCenter.Util.TextField.ID, (JFXTextField) txtId);
+    }
+
+    public void txtCustomerNameOnKeyReleased(KeyEvent keyEvent) {
+
+    }
+
+    public void txtCustomerAddressOnKeyReleased(KeyEvent keyEvent) {
+    }
+
+    public void txtCustomerContactOnKeyReleased(KeyEvent keyEvent) {
+    }
+
+    public void txtCustomerNameOnKeyReleased(ActionEvent event) {
+
+
+    }
+
+    public void txtCustomerAddressOnKeyReleased(ActionEvent event) {
+
+
+    }
+
+    public void txtCustomerContactOnKeyReleased(ActionEvent event) {
+
+
+    }
+
+    public void txtCustomerEmailOnKeyReleased(ActionEvent event) {
+
     }
 }

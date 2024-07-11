@@ -175,20 +175,12 @@ public class DashbordController {
 
     }
 
-    @FXML
-    void btSuppliers(ActionEvent event) throws IOException {
-       setUi("supplierpage.fxml");
-    }
 
     @FXML
     void btTarget(ActionEvent event) throws IOException {
         setUi("targetpage.fxml");
     }
 
-    @FXML
-    void btTransport(ActionEvent event) throws IOException {
-        setUi("transport.fxml");
-    }
 
     @FXML
     void btaddNewClient(ActionEvent event) throws IOException {

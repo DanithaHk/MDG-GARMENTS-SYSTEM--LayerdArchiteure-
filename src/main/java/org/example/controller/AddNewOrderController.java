@@ -5,24 +5,20 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import org.example.bo.custom.AddOrderBO;
 import org.example.bo.custom.BOFactory;
-import org.example.dto.MaterialDTO;
-import org.example.dto.ProductDTO;
+import org.example.dto.*;
 import org.example.entity.Client;
 import org.example.view.tdm.CartTm;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class AddNewOrderController {
     @FXML
@@ -111,7 +107,7 @@ public class AddNewOrderController {
         setCellValueFactory();
         loadNextOrderId();
         getProductIds();
-        getMaterialIds();
+        getMaterialNames();
         setDate();
     }
 
@@ -135,12 +131,12 @@ public class AddNewOrderController {
         }
     }
 
-    private void getMaterialIds() {
+    private void getMaterialNames() {
         ObservableList<String> obList = FXCollections.observableArrayList();
         try {
-            List<String> mIdList = addOrderBO.getMIds();
-            for (String id : mIdList) {
-                obList.add(id);
+            List<String> mIdList = addOrderBO.getMNames();
+            for (String names : mIdList) {
+                obList.add(names);
             }
 
             cmbMaterialName.setItems(obList);
@@ -232,8 +228,36 @@ public class AddNewOrderController {
     }
 
     public void btnAddOrderOnAction (ActionEvent event){
+        oId = txtOid.getText();
+        String name = txtOproductName.getText();
+        String date = txtOdate.getText();
+        String cid = txtOclientId.getText();
+        int qty = Integer.parseInt(txtQty.getText());
+        String desc = cmbMaterialName.getValue();
+        String mId = txtMaterialId.getText();
+        int materialQty = Integer.parseInt(txtMterialQty.getText());
+        String mName = cmbMaterialName.getValue();
 
+        boolean b = false;
+
+        b = saveOrder(oId,name,date,qty,cid, mId, mName,
+            tblcart.getItems().stream().map(tm -> new OrderDetailDTO(oId,tm.getCId(), tm.getCNumber(),
+                    tm.getPId(), tm.getPName(), tm.getUnitPrice(),tm.getQty(),
+                    tm.getDate(),tm.getMaterialQtyTotal(),tm.getTotal())).collect(Collectors.toList()));
+
+            if (b){
+                new Alert(Alert.AlertType.CONFIRMATION,"order Placed!").show();
+            } else {
+                new Alert(Alert.AlertType.CONFIRMATION,"order not placed!").show();
+            }
     }
+
+    private boolean saveOrder(String oId, String name, String date, int qty, String cid, String mId, String mName, List<OrderDetailDTO> collect) {
+        OrderDTO orderDTO = new OrderDTO(oId,name,date,qty,cid,collect);
+        MaterialDetailDTO materialDetailDTO = new MaterialDetailDTO(oId,mName,mId,qty);
+        return addOrderBO.saveOrder(orderDTO,materialDetailDTO);
+    }
+
 
     public void btnClearOnAction (ActionEvent event){
     clear();
@@ -256,7 +280,9 @@ public class AddNewOrderController {
     public void cmbMaterialNameOnAction (ActionEvent event){
         String name = cmbMaterialName.getValue();
         MaterialDTO materialDTO = addOrderBO.getMaterialDeatils(name);
-        txtMaterialId.setText(materialDTO.getId());
+        if (materialDTO != null) {
+            txtMaterialId.setText(materialDTO.getId());
+      }
 
     }
 

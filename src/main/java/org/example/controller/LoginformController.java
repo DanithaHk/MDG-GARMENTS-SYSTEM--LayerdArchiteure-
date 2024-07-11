@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.example.db.DbConnection;
+import org.example.util.ValidateUtil;
 //import lk.ijse.Util.ValidateUtil;
 //import lk.ijse.db.DbConnection;
 
@@ -50,13 +51,13 @@ public class LoginformController {
         if (!isUserIdValidate) {
             // new Alert(Alert.AlertType.ERROR, "INVALID Name").show();
             num = 1;
-           // ValidateUtil.vibrateTextField(txtUserId);
+            ValidateUtil.vibrateTextField(txtUserId);
         }
         String pw = txtPassword.getText();
         boolean isPwValidate = Pattern.matches("[A-z0-9]{3,}", pw);
         if (!isPwValidate){
             num =1;
-           // ValidateUtil.vibrateTextField(txtPassword);
+            ValidateUtil.vibrateTextField(txtPassword);
         }
         if (num == 1) {
             num = 0;

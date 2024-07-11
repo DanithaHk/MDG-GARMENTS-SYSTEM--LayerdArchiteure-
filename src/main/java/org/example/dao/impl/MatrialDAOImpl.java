@@ -2,9 +2,7 @@ package org.example.dao.impl;
 
 import org.example.dao.SQLUtil;
 import org.example.dao.custom.MaterialDAO;
-import org.example.entity.Employee;
 import org.example.entity.Material;
-import org.example.entity.Product;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,9 +42,14 @@ public class MatrialDAOImpl implements MaterialDAO {
 
     @Override
     public List<String> getIds() throws SQLException, ClassNotFoundException {
+        return null;
+    }
+
+    @Override
+    public List<String> getNames() throws SQLException, ClassNotFoundException {
         List<String> idList = new ArrayList<>();
 
-        ResultSet rst = SQLUtil.execute("SELECT mid FROM material");
+        ResultSet rst = SQLUtil.execute("SELECT description FROM material");
 
         while(rst.next()) {
             idList.add(rst.getString(1));
@@ -77,7 +80,7 @@ public class MatrialDAOImpl implements MaterialDAO {
 
     @Override
     public Material materialsList(String name) throws SQLException, ClassNotFoundException {
-        ResultSet resultSet = SQLUtil.execute( "SELECT * from material where description =?", name);
+        ResultSet resultSet = SQLUtil.execute("SELECT * from material where description=?",name+"");
         resultSet.next();
         return new Material(resultSet.getString("mid"),resultSet.getString("description"),resultSet.getInt("qty"),resultSet.getDouble("costPerOne"),resultSet.getString("username"));
     }
